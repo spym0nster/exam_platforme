@@ -6,6 +6,22 @@ Voir [docs/SPECIFICATION.md](docs/SPECIFICATION.md) pour la spécification techn
 
 **Périmètre du MVP actuel :** authentification, dashboard, mode Examen, et le workspace **Analyse** (texte + équations + tableaux + graphes) — stack Next.js + TypeScript + PostgreSQL.
 
+## Démarrer sans rien installer — GitHub Codespaces
+
+Le plus simple si tu ne veux pas installer Node.js/PostgreSQL sur ta machine : tout tourne dans ton navigateur, hébergé par GitHub.
+
+1. Ouvre le dépôt sur GitHub et bascule sur la branche `claude/esen-digital-assessment-7tsfqj`.
+2. Clique sur le bouton vert **Code** → onglet **Codespaces** → **Create codespace on claude/esen-digital-assessment-7tsfqj**.
+3. Patiente pendant la préparation (installation de Node.js, PostgreSQL, `npm install`, création de la base et des données de démo — tout est automatique via `.devcontainer/`).
+4. Une fois prêt, l'application démarre automatiquement (`npm run dev`) et une notification "Ouvrir dans le navigateur" apparaît pour le port **3000**. Si elle n'apparaît pas : onglet **Ports** en bas → clic sur le globe 🌐 à côté du port 3000.
+
+Comptes de démonstration (mot de passe : `password123`) :
+
+- Étudiant — `sami.trabelsi@esen.tn`
+- Enseignant — `imene.gharbi@esen.tn`
+
+Nécessite juste un compte GitHub (le tien) — inclus gratuitement (heures gratuites mensuelles sur le plan Free).
+
 ## Démarrer en local
 
 Prérequis : Node.js 20+, PostgreSQL en cours d'exécution.

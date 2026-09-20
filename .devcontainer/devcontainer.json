@@ -1,0 +1,20 @@
+{
+  "name": "ESEN Digital Assessment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/exam_platforme",
+  "forwardPorts": [3000, 5432],
+  "portsAttributes": {
+    "3000": {
+      "label": "ESEN Digital Assessment",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postCreateCommand": "npm install && npx prisma db push && npm run db:seed",
+  "postStartCommand": "npm run dev",
+  "customizations": {
+    "vscode": {
+      "extensions": ["Prisma.prisma", "dbaeumer.vscode-eslint"]
+    }
+  }
+}
