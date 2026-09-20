@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+enum ExamStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+}
+
+enum SubmissionStatus {
+  IN_PROGRESS
+  SUBMITTED
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  name         String
+  role         Role
+  createdAt    DateTime     @default(now())
+  examsCreated Exam[]       @relation("TeacherExams")
+  submissions  Submission[]
+}
+
+model Subject {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  order        Int      @default(0)
+  defaultTools String[]
+  exams        Exam[]
+}
+
+model Exam {
+  id          String       @id @default(cuid())
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  subjectId   String
+  teacher     User         @relation("TeacherExams", fields: [teacherId], references: [id])
+  teacherId   String
+  title       String
+  durationMin Int
+  status      ExamStatus   @default(DRAFT)
+  createdAt   DateTime     @default(now())
+  questions   Question[]
+  submissions Submission[]
+}
+
+model Question {
+  id           String   @id @default(cuid())
+  exam         Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  examId       String
+  order        Int
+  prompt       String
+  points       Int      @default(5)
+  allowedTools String[]
+  answers      Answer[]
+}
+
+model Submission {
+  id          String           @id @default(cuid())
+  exam        Exam             @relation(fields: [examId], references: [id])
+  examId      String
+  student     User             @relation(fields: [studentId], references: [id])
+  studentId   String
+  status      SubmissionStatus @default(IN_PROGRESS)
+  startedAt   DateTime         @default(now())
+  submittedAt DateTime?
+  answers     Answer[]
+
+  @@unique([examId, studentId])
+}
+
+model Answer {
+  id           String     @id @default(cuid())
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  submissionId String
+  question     Question   @relation(fields: [questionId], references: [id])
+  questionId   String
+  content      Json
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([submissionId, questionId])
+}
