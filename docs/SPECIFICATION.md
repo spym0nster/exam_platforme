@@ -132,7 +132,37 @@ Authentification, dashboard étudiant/enseignant, création d'examen simple, mod
 
 **Phase 3 :** durcissement sécurité/anti-triche, gestion multi-classes, statistiques enseignant, accessibilité étendue (lecteurs d'écran, navigation clavier complète).
 
-## 11. Périmètre exact du MVP actuel
+## 11. Identité visuelle
+
+Charte graphique ESEN à respecter dans l'implémentation réelle (thème clair) :
+
+| Rôle | Couleur | Hex |
+|---|---|---|
+| Bleu marine (navy) | titres, surfaces sombres/en-têtes | `#122A4D` |
+| Bleu profond (navy2) | variante accent secondaire | `#0B4F86` |
+| **Bleu clair — Bleu ESEN (couleur principale)** | boutons, liens, états actifs | `#298DCA` |
+| Bleu pâle | fonds teintés (lignes actives, badges) | `#EAF4FA` |
+| Or | accents secondaires, mise en valeur ponctuelle | `#F5B335` |
+| Or foncé | variante or sur fond clair | `#B8801A` |
+| Encre (texte principal) | texte principal | `#16233A` |
+| Encre 2 (texte secondaire) | libellés, texte muet | `#53637A` |
+| Encre 3 (texte tertiaire) | texte très discret, placeholders | `#8290A3` |
+| Filet | bordures, séparateurs | `#D9E3EC` |
+| Fond soft | fond de page | `#F4F7FA` |
+| Positif | succès (ex. "Disponible") | `#1E7A4D` |
+| Attention | avertissement (ex. minuteur) | `#A97400` |
+| Négatif | erreur | `#C0392B` |
+| Papier | fond des cartes/surfaces | `#FFFFFF` |
+
+Le bleu clair (`#298DCA`) est la couleur d'action principale de la plateforme ; le bleu marine reste réservé aux titres et surfaces d'identité (en-têtes, logo).
+
+**Typographie** : Poppins uniquement — graisses Bold/ExtraBold (700/800) pour les titres et chiffres clés, Regular/Medium (400/500) pour le texte courant et les libellés.
+
+**Logo** : logo officiel ESEN (bulles + mot-symbole "ESEN" + nom complet bilingue) affiché dans l'en-tête de connexion et la barre latérale du dashboard.
+
+Le prototype UI (voir lien partagé en session) applique déjà cette charte.
+
+## 12. Périmètre exact du MVP actuel
 
 - Authentification étudiant / enseignant.
 - Dashboard étudiant (liste des matières/examens) et dashboard enseignant (liste des examens créés).
