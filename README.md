@@ -4,7 +4,7 @@ Plateforme numérique unifiée d'évaluation, permettant aux étudiants ayant de
 
 Voir [docs/SPECIFICATION.md](docs/SPECIFICATION.md) pour la spécification technique et fonctionnelle complète, l'architecture (Assessment Engine + Subject Workspaces), le modèle de données et la roadmap.
 
-**Périmètre du MVP actuel :** authentification, dashboard, mode Examen, et le workspace **Analyse** (texte + équations + tableaux + graphes) — stack Next.js + TypeScript + PostgreSQL.
+**Périmètre actuel :** authentification, dashboards étudiant/enseignant, mode Examen, et quatre matières fonctionnelles — **Analyse** (texte, équations, tableaux, graphes), **Statistiques & Probabilités** (+ graphiques barres/camembert), **ASDI** (pseudocode + organigramme) et **Systèmes Logiques** (circuits logiques) — plus consultation des copies, export PDF et duplication d'examen côté enseignant. Stack Next.js + TypeScript + PostgreSQL.
 
 ## Démarrer sans rien installer — GitHub Codespaces
 
@@ -33,7 +33,9 @@ cp .env.example .env
 # renseigner DATABASE_URL et SESSION_SECRET dans .env
 
 npm run db:push   # applique le schéma Prisma à la base
-npm run db:seed   # crée les matières, un examen de démo et deux comptes
+npm run db:seed   # crée les matières, quatre examens de démo et deux comptes
+
+npx playwright install --with-deps chromium   # une fois, requis pour l'export PDF des copies
 
 npm run dev       # http://localhost:3000
 ```
@@ -45,8 +47,8 @@ Comptes de démonstration (mot de passe : `password123`) :
 
 ## Structure du projet
 
-- `app/` — routes Next.js (App Router) : `login`, `dashboard` (étudiant), `teacher` (enseignant), `exam/[examId]` (mode Examen), routes API sous `app/api`.
-- `components/` — `ExamRunner` (orchestrateur du mode Examen), `blocks/` (Texte, Équation, Tableau, Graphe, Formes — le "Diagram/Math/Text Engine" de la spécification), `NewExamForm`, `LoginForm`.
-- `lib/` — `auth.ts`/`session-token.ts` (session par cookie signé), `prisma.ts`, `blocks.ts` (types des blocs de réponse).
+- `app/` — routes Next.js (App Router) : `login`, `dashboard` (étudiant), `teacher` (enseignant, avec `exams/[examId]`, `exams/[examId]/edit`, `exams/[examId]/submissions/[submissionId]`), `exam/[examId]` (mode Examen), routes API sous `app/api`.
+- `components/` — `ExamRunner` (orchestrateur du mode Examen), `blocks/` (Texte, Équation, Tableau, Graphe, Formes, Graphique, Pseudocode, Organigramme/Circuit — le "Text/Math/Diagram Engine" de la spécification), `BlockRenderer` (rendu lecture seule pour l'enseignant et le PDF), `NewExamForm`, `LoginForm`.
+- `lib/` — `auth.ts`/`session-token.ts` (session par cookie signé), `prisma.ts`, `blocks.ts` (types des blocs de réponse), `submission-pdf.ts` (génération du PDF via Chromium headless), `markdown-lite.ts`, `graph-grid.ts`.
 - `prisma/schema.prisma` — modèle de données (User, Subject, Exam, Question, Submission, Answer).
-- `prisma/seed.ts` — jeu de données de démonstration.
+- `prisma/seed.ts` — jeu de données de démonstration (4 matières actives, 2 comptes).

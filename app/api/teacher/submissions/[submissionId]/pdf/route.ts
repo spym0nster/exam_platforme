@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { chromium } from "playwright-core";
+import { chromium } from "playwright";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { renderSubmissionHtml } from "@/lib/submission-pdf";
@@ -44,9 +44,9 @@ export async function GET(
     })),
   });
 
-  const browser = await chromium.launch({
-    executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || "/opt/pw-browsers/chromium",
-  });
+  const browser = await chromium.launch(
+    process.env.CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH } : {}
+  );
   try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle" });

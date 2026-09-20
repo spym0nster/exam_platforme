@@ -10,7 +10,7 @@
       "onAutoForward": "openPreview"
     }
   },
-  "postCreateCommand": "npm install && npx prisma db push && npm run db:seed",
+  "postCreateCommand": "npm install && npx playwright install --with-deps chromium && npx prisma db push && npm run db:seed",
   "postStartCommand": "npm run dev",
   "customizations": {
     "vscode": {
