@@ -3,9 +3,9 @@
 import { useRef } from "react";
 import { DiagramBlockData, Point } from "@/lib/blocks";
 import { BlockShell } from "./BlockShell";
+import { GRAPH_WIDTH as WIDTH, GRAPH_HEIGHT as HEIGHT, buildGraphGrid } from "@/lib/graph-grid";
 
-const WIDTH = 320;
-const HEIGHT = 200;
+const { lines: GRID_LINES, labels: GRID_LABELS } = buildGraphGrid();
 
 export function GraphBlock({
   block,
@@ -55,8 +55,22 @@ export function GraphBlock({
             onClick={addPoint}
             className="cursor-crosshair rounded bg-paper"
           >
-            <line x1={0} y1={HEIGHT / 2} x2={WIDTH} y2={HEIGHT / 2} stroke="#D9E3EC" />
-            <line x1={WIDTH / 2} y1={0} x2={WIDTH / 2} y2={HEIGHT} stroke="#D9E3EC" />
+            {GRID_LINES.map((l, i) => (
+              <line
+                key={i}
+                x1={l.x1}
+                y1={l.y1}
+                x2={l.x2}
+                y2={l.y2}
+                stroke={l.axis ? "#B9C7D6" : "#EAF4FA"}
+                strokeWidth={l.axis ? 1.4 : 1}
+              />
+            ))}
+            {GRID_LABELS.map((l, i) => (
+              <text key={i} x={l.x} y={l.y} fontSize={8} textAnchor="middle" fill="#8290A3">
+                {l.text}
+              </text>
+            ))}
             {path && <path d={path} fill="none" stroke="#122A4D" strokeWidth={2.2} />}
             {block.points.map((p: Point, i: number) => (
               <circle key={i} cx={p.x} cy={p.y} r={3} fill="#298DCA" />

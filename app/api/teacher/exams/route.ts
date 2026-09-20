@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { TOOL_IDS } from "@/lib/blocks";
 
-const toolEnum = z.enum(["text", "equation", "table", "graph", "shapes"]);
+const toolEnum = z.enum(TOOL_IDS);
 
 const examSchema = z.object({
   subjectId: z.string(),

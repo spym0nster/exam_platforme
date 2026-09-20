@@ -52,9 +52,10 @@ export default async function TeacherPage() {
           {exams.map((exam) => {
             const submitted = exam.submissions.filter((s) => s.status === "SUBMITTED").length;
             return (
-              <div
+              <Link
                 key={exam.id}
-                className="flex items-center gap-6 rounded-2xl border border-line bg-paper px-7 py-5"
+                href={`/teacher/exams/${exam.id}`}
+                className="flex items-center gap-6 rounded-2xl border border-line bg-paper px-7 py-5 hover:border-blue"
               >
                 <div className="flex flex-1 flex-col gap-1">
                   <div className="flex items-center gap-2">
@@ -68,7 +69,7 @@ export default async function TeacherPage() {
                     {submitted} copie{submitted > 1 ? "s" : ""} soumise{submitted > 1 ? "s" : ""}
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

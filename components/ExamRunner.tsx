@@ -8,6 +8,9 @@ import { EquationBlock } from "@/components/blocks/EquationBlock";
 import { TableBlock } from "@/components/blocks/TableBlock";
 import { GraphBlock } from "@/components/blocks/GraphBlock";
 import { ShapesBlock } from "@/components/blocks/ShapesBlock";
+import { ChartBlock } from "@/components/blocks/ChartBlock";
+import { PseudocodeBlock } from "@/components/blocks/PseudocodeBlock";
+import { NodeDiagramBlock } from "@/components/blocks/NodeDiagramBlock";
 import { Block, ToolId, TOOL_LABELS, createBlock } from "@/lib/blocks";
 
 export type ExamQuestion = {
@@ -250,6 +253,34 @@ export function ExamRunner({
                 case "shapes":
                   return (
                     <ShapesBlock
+                      key={block.id}
+                      block={block}
+                      onChange={(b) => changeBlock(i, b)}
+                      onRemove={() => removeBlock(i)}
+                    />
+                  );
+                case "chart":
+                  return (
+                    <ChartBlock
+                      key={block.id}
+                      block={block}
+                      onChange={(b) => changeBlock(i, b)}
+                      onRemove={() => removeBlock(i)}
+                    />
+                  );
+                case "pseudocode":
+                  return (
+                    <PseudocodeBlock
+                      key={block.id}
+                      block={block}
+                      onChange={(b) => changeBlock(i, b)}
+                      onRemove={() => removeBlock(i)}
+                    />
+                  );
+                case "flowchart":
+                case "circuit":
+                  return (
+                    <NodeDiagramBlock
                       key={block.id}
                       block={block}
                       onChange={(b) => changeBlock(i, b)}

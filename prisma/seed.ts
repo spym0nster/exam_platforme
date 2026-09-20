@@ -8,10 +8,10 @@ const SUBJECTS: { name: string; slug: string; defaultTools: string[] }[] = [
   {
     name: "Statistiques & Probabilités",
     slug: "statistiques-probabilites",
-    defaultTools: ["text", "equation", "table", "graph"],
+    defaultTools: ["text", "equation", "table", "chart"],
   },
-  { name: "Systèmes Logiques", slug: "systemes-logiques", defaultTools: ["text", "diagram"] },
-  { name: "ASDI", slug: "asdi", defaultTools: ["text", "diagram"] },
+  { name: "Systèmes Logiques", slug: "systemes-logiques", defaultTools: ["text", "circuit"] },
+  { name: "ASDI", slug: "asdi", defaultTools: ["text", "pseudocode", "flowchart"] },
   {
     name: "Systèmes d'exploitation",
     slug: "systemes-exploitation",
@@ -20,7 +20,7 @@ const SUBJECTS: { name: string; slug: string; defaultTools: string[] }[] = [
   {
     name: "Architecture des ordinateurs",
     slug: "architecture-ordinateurs",
-    defaultTools: ["text", "diagram", "table"],
+    defaultTools: ["text", "flowchart", "table"],
   },
   { name: "Management", slug: "management", defaultTools: ["text"] },
   { name: "Économie numérique", slug: "economie-numerique", defaultTools: ["text"] },
@@ -32,6 +32,33 @@ const SUBJECTS: { name: string; slug: string; defaultTools: string[] }[] = [
   { name: "Digital & AI Literacy", slug: "digital-ai-literacy", defaultTools: ["text"] },
   { name: "Français", slug: "francais", defaultTools: ["text"] },
 ];
+
+type QuestionSeed = { points: number; allowedTools: string[]; prompt: string };
+
+async function ensureExam(
+  subjectSlug: string,
+  teacherId: string,
+  title: string,
+  durationMin: number,
+  questions: QuestionSeed[]
+) {
+  const subject = await prisma.subject.findUniqueOrThrow({ where: { slug: subjectSlug } });
+  const existing = await prisma.exam.findFirst({ where: { subjectId: subject.id, title } });
+  if (existing) return;
+
+  await prisma.exam.create({
+    data: {
+      subjectId: subject.id,
+      teacherId,
+      title,
+      durationMin,
+      status: "PUBLISHED",
+      questions: {
+        create: questions.map((q, i) => ({ order: i + 1, ...q })),
+      },
+    },
+  });
+}
 
 async function main() {
   for (const [index, subject] of SUBJECTS.entries()) {
@@ -66,54 +93,78 @@ async function main() {
     },
   });
 
-  const analyse = await prisma.subject.findUniqueOrThrow({ where: { slug: "analyse" } });
+  await ensureExam("analyse", teacher.id, "Analyse — DS1 : Étude de fonctions", 90, [
+    {
+      points: 5,
+      allowedTools: ["text", "equation", "table", "graph"],
+      prompt:
+        "On considère la fonction f définie sur ℝ \\ {-1} par f(x) = (2x - 1) / (x + 1). Étudier les variations de f, préciser ses asymptotes, puis tracer sa représentation graphique Cf.",
+    },
+    {
+      points: 4,
+      allowedTools: ["text", "equation"],
+      prompt: "Calculer les limites de f en -∞, en -1 (à gauche et à droite) et en +∞.",
+    },
+    {
+      points: 3,
+      allowedTools: ["text", "table"],
+      prompt: "Dresser le tableau de variation complet de f.",
+    },
+    {
+      points: 3,
+      allowedTools: ["text", "graph"],
+      prompt: "Tracer la courbe représentative Cf de f, en faisant apparaître ses asymptotes.",
+    },
+  ]);
 
-  const existingExam = await prisma.exam.findFirst({
-    where: { subjectId: analyse.id, title: "Analyse — DS1 : Étude de fonctions" },
-  });
-
-  if (!existingExam) {
-    await prisma.exam.create({
-      data: {
-        subjectId: analyse.id,
-        teacherId: teacher.id,
-        title: "Analyse — DS1 : Étude de fonctions",
-        durationMin: 90,
-        status: "PUBLISHED",
-        questions: {
-          create: [
-            {
-              order: 1,
-              points: 5,
-              allowedTools: ["text", "equation", "table", "graph"],
-              prompt:
-                "On considère la fonction f définie sur ℝ \\ {-1} par f(x) = (2x - 1) / (x + 1). Étudier les variations de f, préciser ses asymptotes, puis tracer sa représentation graphique Cf.",
-            },
-            {
-              order: 2,
-              points: 4,
-              allowedTools: ["text", "equation"],
-              prompt:
-                "Calculer les limites de f en -∞, en -1 (à gauche et à droite) et en +∞.",
-            },
-            {
-              order: 3,
-              points: 3,
-              allowedTools: ["text", "table"],
-              prompt: "Dresser le tableau de variation complet de f.",
-            },
-            {
-              order: 4,
-              points: 3,
-              allowedTools: ["text", "graph"],
-              prompt:
-                "Tracer la courbe représentative Cf de f, en faisant apparaître ses asymptotes.",
-            },
-          ],
-        },
+  await ensureExam(
+    "statistiques-probabilites",
+    teacher.id,
+    "Statistiques — DS1 : Analyse d'une série statistique",
+    60,
+    [
+      {
+        points: 6,
+        allowedTools: ["text", "equation", "table", "chart"],
+        prompt:
+          "On a relevé les notes suivantes sur 5 étudiants : 12, 15, 18, 14, 20. Calculer la moyenne et l'écart-type de cette série, puis la représenter par un diagramme en barres.",
       },
-    });
-  }
+      {
+        points: 4,
+        allowedTools: ["text", "chart"],
+        prompt: "Représenter la répartition de ces notes par un diagramme circulaire.",
+      },
+    ]
+  );
+
+  await ensureExam("asdi", teacher.id, "ASDI — DS1 : Algorithme de parité", 60, [
+    {
+      points: 5,
+      allowedTools: ["text", "pseudocode"],
+      prompt:
+        "Écrire en pseudocode un algorithme qui lit un entier n et affiche s'il est pair ou impair.",
+    },
+    {
+      points: 5,
+      allowedTools: ["text", "flowchart"],
+      prompt:
+        "Représenter cet algorithme sous forme d'organigramme (Début, condition, traitements, Fin).",
+    },
+  ]);
+
+  await ensureExam("systemes-logiques", teacher.id, "Systèmes Logiques — DS1 : Portes logiques", 45, [
+    {
+      points: 6,
+      allowedTools: ["text", "circuit"],
+      prompt:
+        "Construire le circuit logique correspondant à l'expression S = (A ET B) OU (NON C), à l'aide des portes INPUT, AND, NOT, OR et OUTPUT.",
+    },
+    {
+      points: 4,
+      allowedTools: ["text"],
+      prompt: "Expliquer en quelques lignes le fonctionnement du circuit obtenu.",
+    },
+  ]);
 
   console.log("Seed terminé : comptes de démonstration (mot de passe: password123)");
   console.log(" - Étudiant : sami.trabelsi@esen.tn");

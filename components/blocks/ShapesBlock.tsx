@@ -117,6 +117,7 @@ export function ShapesBlock({
         <div className="w-fit rounded-lg border border-line bg-soft p-2">
           <svg
             ref={svgRef}
+            data-testid="shapes-canvas"
             width={WIDTH}
             height={HEIGHT}
             viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
